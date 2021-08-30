@@ -1,0 +1,11 @@
+# Laravel stuff
+alias artisan="php artisan"
+alias dbreset="php artisan migrate:fresh --seed"
+
+# Testing
+alias p="phpunit"
+alias pf="phpunit --filter"
+alias ptf="phpunit --testdox --filter"
+
+# Git stuff
+alias gs="git status"
