@@ -1,4 +1,4 @@
-<p align="center">dotfiles</p>
+<p align="center"><img src="https://raw.githubusercontent.com/jorgecortesdev/dotfiles/main/.github/dotfiles-logo.svg" alt="Logo Laravel Sail"></p>
 
 ## Introduction
 
