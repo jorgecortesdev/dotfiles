@@ -12,3 +12,16 @@ alias ptf="phpunit --testdox --filter"
 
 # Git stuff
 alias gs="git status"
+alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias ga="git add"
+alias gaa="git add ."
+alias gc="git commit -m"
+alias gp="git push"
+alias nah="git reset --hard && git clean -df"
+alias changelog="git log --oneline --since='2015-03-01' --format='* %cd: %s' --date=short"
+alias wip="git add . && git commit -m 'wip'"
+
+# Misc stuff
+alias hideDesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias showDesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
