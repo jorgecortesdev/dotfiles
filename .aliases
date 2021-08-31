@@ -1,3 +1,6 @@
+# dotfiles
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
 # Laravel stuff
 alias artisan="php artisan"
 alias dbreset="php artisan migrate:fresh --seed"
