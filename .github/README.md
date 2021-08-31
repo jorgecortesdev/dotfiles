@@ -70,10 +70,14 @@ config push
 ```bash
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
+git clone --bare https://github.com/{GIT_USERNAME}/dotfiles.git $HOME/.cfg
+
 config config --local status.showUntrackedFiles no
 
 config checkout
 ```
+
+Replace the repository `https://github.com/{GIT_USERNAME}/dotfiles.git` with your own.
 
 And that's it, from now on you can use your `config` alias to update or create new configurations files.
 
