@@ -14,7 +14,7 @@ set incsearch
 "---------- Mappings -----------"
 
 "Make it easy to edit the vimrc file.
-nmap <Leader>:ev :tabedit $MYVIMRC<cr>
+nmap <Leader>ev :tabedit $MYVIMRC<cr>
 
 "Highlight removal.
 nmap <Leader><space> :nohlsearch<cr>
@@ -24,6 +24,10 @@ nmap <Leader><space> :nohlsearch<cr>
 set splitbelow
 set splitright
 
+
+"Only works for splits
+" :vsp Opens a vertical split
+" :sp  Opens a horizontal split
 nmap <C-J> <C-W><C-J>
 nmap <C-K> <C-W><C-K>
 nmap <C-H> <C-W><C-H>
@@ -32,7 +36,6 @@ nmap <C-L> <C-W><C-L>
 "---------- Auto-Commands -----------"
 
 "Automatically source the vimrc file on save.
-
 augroup autosourcing
 	autocmd!
 	autocmd BufWritePost .vimrc source %
