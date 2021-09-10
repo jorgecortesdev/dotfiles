@@ -1,3 +1,8 @@
 # Shortcuts to projects I often work
 
+# personal
 students="$HOME/Code/careerfoundry/students"
+
+# work
+tc="$HOME/code/bos/truecarbon-app"
+
