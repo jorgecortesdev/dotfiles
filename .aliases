@@ -22,6 +22,20 @@ alias nah="git reset --hard && git clean -df"
 alias changelog="git log --oneline --since='2015-03-01' --format='* %cd: %s' --date=short"
 alias wip="git add . && git commit -m 'wip'"
 
+# usage: clone https://github.com/{USER}/{REPOSITORY}.git
+# clone and change directory in one step
+clone() {
+  if [[ -z $1 ]]; then
+    echo "clone(): repository url not specified"
+    echo "usage: clone https://github.com/{USER}/{REPOSITORY}.git"
+  else
+    repo_url=$1
+    repo_name=$(basename "$repo_url" ".${repo_url##*.}")
+    git clone $repo_url
+    cd $repo_name
+  fi
+}
+
 # Misc stuff
 alias zshconfig="vim ~/.zshrc"
 alias hideDesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
