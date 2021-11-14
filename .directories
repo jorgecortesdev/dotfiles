@@ -1,7 +1,7 @@
 # Shortcuts to projects I often work
 
 # personal
-students="$HOME/Code/careerfoundry/students"
+students="$HOME/Code/cf/students"
 
 # work
 tc="$HOME/code/bos/truecarbon-app"
