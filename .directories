@@ -5,4 +5,5 @@ students="$HOME/Code/cf/students"
 
 # work
 tc="$HOME/code/bos/truecarbon-app"
+dw="$HOME/code/bos/dewater"
 
