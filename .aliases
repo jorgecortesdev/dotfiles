@@ -38,6 +38,8 @@ clone() {
 
 # Misc stuff
 alias zshconfig="vim ~/.zshrc"
+alias zshreload="source ~/.zshrc"
+alias hostfile="sudo vim /etc/hosts"
 alias hideDesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias showDesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
