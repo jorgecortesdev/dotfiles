@@ -7,12 +7,11 @@ alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 alias artisan="php artisan"
 alias sart="sail artisan"
 
-alias dbreset="php artisan migrate:fresh --seed"
 alias smf="sail artisan migrate:fresh"
-alias mf="php artisan migrate:fresh"
 alias smfs="sail artisan migrate:fresh --seed"
-alias mfs="php artisan migrate:fresh --seed"
 
+alias mf="php artisan migrate:fresh"
+alias mfs="php artisan migrate:fresh --seed"
 
 # Testing
 alias p="phpunit"
