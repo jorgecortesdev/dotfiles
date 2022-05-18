@@ -2,14 +2,23 @@
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Laravel stuff
-alias artisan="php artisan"
-alias dbreset="php artisan migrate:fresh --seed"
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+
+alias artisan="php artisan"
+alias sart="sail artisan"
+
+alias dbreset="php artisan migrate:fresh --seed"
+alias smf="sail artisan migrate:fresh"
+alias mf="php artisan migrate:fresh"
+alias smfs="sail artisan migrate:fresh --seed"
+alias mfs="php artisan migrate:fresh --seed"
+
 
 # Testing
 alias p="phpunit"
 alias pf="phpunit --filter"
 alias ptf="phpunit --testdox --filter"
+alias spf="sail phpunit --filter"
 
 # Git stuff
 alias gs="git status"
