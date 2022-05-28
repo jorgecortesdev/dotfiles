@@ -29,6 +29,7 @@ alias gp="git push"
 alias nah="git reset --hard && git clean -df"
 alias changelog="git log --oneline --since='2015-03-01' --format='* %cd: %s' --date=short"
 alias wip="git add . && git commit -m 'wip'"
+alias gpo="git push origin"
 
 # usage: clone https://github.com/{USER}/{REPOSITORY}.git
 # clone and change directory in one step
@@ -42,6 +43,16 @@ clone() {
     git clone $repo_url
     cd $repo_name
   fi
+}
+
+commit() {
+  commit_message="$1"
+  if [ "$commit_message" = "" ]
+  then
+    commit_message="wip"
+  fi
+  git add .
+  eval "git commit -a -m '${commit_message}'"
 }
 
 # Misc stuff
