@@ -119,6 +119,3 @@ export NVM_DIR="$HOME/.nvm"
 # Activate autosuggestions: brew install zsh-autosuggestions
 source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-# Expose only works with php 8.0 currently
-alias expose="/opt/homebrew/Cellar/php@8.0/8.0.15/bin/php ~/.composer/vendor/bin/expose"
-
