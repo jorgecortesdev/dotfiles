@@ -4,6 +4,6 @@
 students="$HOME/Code/cf/students"
 
 # work
-tc="$HOME/code/bos/truecarbon-app"
-dw="$HOME/code/bos/dewater"
+tc="$HOME/Code/bo/truecarbon-app"
+dw="$HOME/Code/bo/dewater"
 
