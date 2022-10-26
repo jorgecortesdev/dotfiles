@@ -2,6 +2,7 @@
 
 # personal
 students="$HOME/Code/cf/students"
+cf="$HOME/Code/jc/sites/cfapp"
 
 # work
 tc="$HOME/Code/bo/truecarbon-app"
