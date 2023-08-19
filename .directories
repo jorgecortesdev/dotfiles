@@ -2,7 +2,7 @@
 
 # personal
 students="$HOME/Code/cf/students"
-cf="$HOME/Code/jc/sites/cfapp"
+rm="$HOME/Code/jc/sites/reviewmate"
 jc="$HOME/Code/jc"
 
 # work
