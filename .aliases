@@ -55,6 +55,15 @@ commit() {
   eval "git commit -a -m '${commit_message}'"
 }
 
+# Quick worktree creation
+wt() {
+  git worktree add "../$(basename $(pwd))-$1" -b "$1"
+  cd "../$(basename $(pwd))-$1"
+}
+
+# Usage: wt feature/my-thing
+# Creates worktree and cd's into it
+
 # Misc stuff
 alias zshconfig="vim ~/.zshrc"
 alias zshreload="source ~/.zshrc"

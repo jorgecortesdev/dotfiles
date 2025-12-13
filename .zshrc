@@ -112,6 +112,8 @@ source "$HOME/.directories"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+export HOMEBREW_NO_INSTALL_CLEANUP=TRUE
+
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Activate autosuggestions: brew install zsh-autosuggestions
@@ -121,3 +123,11 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+#export PATH="/opt/homebrew/opt/php@8.3/bin:$PATH"
+#export PATH="/opt/homebrew/opt/php@8.3/sbin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+export PATH="/opt/homebrew/opt/php@8.3/bin:$PATH"
+export PATH="/opt/homebrew/opt/php@8.3/sbin:$PATH"
+
+export PATH="$HOME/.docker/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
