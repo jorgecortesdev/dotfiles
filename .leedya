@@ -1,0 +1,288 @@
+# Configuration
+WORKTREE_BASE_DIR="/Users/jcortes/Code/work/leedya"
+MAIN_REPO="leedya-app"
+DB_USER="root"
+DB_PASS=""
+
+# List all worktrees - works from anywhere
+wtl() {
+  echo "📋 Git Worktrees:"
+  git -C "${WORKTREE_BASE_DIR}/${MAIN_REPO}" worktree list
+}
+
+# Quick switch to a worktree - works from anywhere
+wtc() {
+  if [ -z "$1" ]; then
+    echo "Available worktrees:"
+    ls -d ${WORKTREE_BASE_DIR}/${MAIN_REPO}*/ 2>/dev/null | xargs -n1 basename
+    return 1
+  fi
+
+  local target="${WORKTREE_BASE_DIR}/$1"
+  if [ -d "$target" ]; then
+    cd "$target"
+    echo "📂 $(pwd)"
+    echo "🌿 $(git branch --show-current)"
+  else
+    echo "❌ Not found: $target"
+  fi
+}
+
+# Create worktree - works from anywhere
+wt() {
+  if [ -z "$1" ]; then
+    echo "Usage: wt <branch-name>"
+    echo "Examples:"
+    echo "  wt feature/auth           # creates new branch from develop"
+    echo "  wt feature/existing-one   # checks out existing branch"
+    return 1
+  fi
+
+  local branch_name="$1"
+  local repo_path="${WORKTREE_BASE_DIR}/${MAIN_REPO}"
+  local safe_branch_name=$(echo "$branch_name" | sed 's/\//-/g')
+  local worktree_path="${WORKTREE_BASE_DIR}/${MAIN_REPO}-${safe_branch_name}"
+  local site_name="${MAIN_REPO}-${safe_branch_name}"
+  local site_url="${site_name}.test"
+  local db_name=$(echo "${MAIN_REPO}_${safe_branch_name}" | sed 's/-/_/g')
+  local redis_prefix=$(echo "${MAIN_REPO}_${safe_branch_name}_" | sed 's/-/_/g')
+
+  # Auto-assign Reverb port
+  local worktree_count=$(git -C "$repo_path" worktree list | wc -l | tr -d ' ')
+  local reverb_port=$((8079 + worktree_count))
+
+  # Check if branch exists (locally or remote)
+  git -C "$repo_path" fetch origin --quiet
+  local branch_exists=false
+  local is_remote=false
+
+  if git -C "$repo_path" show-ref --verify --quiet "refs/heads/${branch_name}"; then
+    branch_exists=true
+  elif git -C "$repo_path" show-ref --verify --quiet "refs/remotes/origin/${branch_name}"; then
+    branch_exists=true
+    is_remote=true
+  fi
+
+  echo "🌳 Creating worktree..."
+  echo "   Branch: $branch_name"
+
+  if [ "$branch_exists" = true ]; then
+    if [ "$is_remote" = true ]; then
+      echo "   Source: remote (origin/${branch_name})"
+    else
+      echo "   Source: local (existing branch)"
+    fi
+  else
+    local base_branch="develop"
+    if [[ "$branch_name" == hotfix/* ]]; then
+      base_branch="main"
+    fi
+    echo "   Source: new branch from ${base_branch}"
+  fi
+
+  echo "   Directory: $worktree_path"
+  echo "   URL: https://$site_url"
+  echo "   Database: $db_name"
+  echo "   Reverb Port: $reverb_port"
+  echo ""
+
+  # Create worktree based on branch existence
+  if [ "$branch_exists" = true ]; then
+    if [ "$is_remote" = true ]; then
+      git -C "$repo_path" worktree add "$worktree_path" -b "$branch_name" "origin/${branch_name}"
+    else
+      git -C "$repo_path" worktree add "$worktree_path" "$branch_name"
+    fi
+  else
+    local base_branch="develop"
+    if [[ "$branch_name" == hotfix/* ]]; then
+      base_branch="main"
+    fi
+    git -C "$repo_path" checkout $base_branch
+    git -C "$repo_path" pull origin $base_branch
+    git -C "$repo_path" worktree add "$worktree_path" -b "$branch_name"
+  fi
+
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to create worktree"
+    return 1
+  fi
+
+  cd "$worktree_path"
+
+  # Setup .env
+  echo "📝 Setting up .env..."
+  if [ -f "${repo_path}/.env" ]; then
+    cp "${repo_path}/.env" .env
+  elif [ -f .env.example ]; then
+    cp .env.example .env
+  fi
+
+  # Update .env values (all HTTPS)
+  sed -i '' "s|^APP_URL=.*|APP_URL=https://${site_url}|" .env
+  sed -i '' "s|^DB_DATABASE=.*|DB_DATABASE=${db_name}|" .env
+
+  # Reverb isolation + HTTPS
+  sed -i '' "s|^REVERB_PORT=.*|REVERB_PORT=${reverb_port}|" .env
+  sed -i '' "s|^REVERB_SCHEME=.*|REVERB_SCHEME=https|" .env
+  sed -i '' "s|^REVERB_HOST=.*|REVERB_HOST=${site_url}|" .env
+
+  # Vite Reverb settings
+  sed -i '' "s|^VITE_REVERB_PORT=.*|VITE_REVERB_PORT=${reverb_port}|" .env
+  sed -i '' "s|^VITE_REVERB_SCHEME=.*|VITE_REVERB_SCHEME=https|" .env
+  sed -i '' "s|^VITE_REVERB_HOST=.*|VITE_REVERB_HOST=${site_url}|" .env
+
+  # Redis isolation
+  sed -i '' "s|^REDIS_PREFIX=.*|REDIS_PREFIX=${redis_prefix}|" .env
+
+  # Secure the site with Valet
+  echo "🔒 Securing site with Valet..."
+  valet secure "$site_name"
+
+  # Create database
+  echo "🗄️  Creating database..."
+  if [ -z "$DB_PASS" ]; then
+    mysql -u "$DB_USER" -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`;"
+  else
+    mysql -u "$DB_USER" -p"$DB_PASS" -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`;"
+  fi
+
+  # Install dependencies
+  echo "📦 Installing Composer dependencies..."
+  composer install --quiet
+
+  echo "📦 Installing npm dependencies..."
+  npm install --silent
+
+  # Laravel setup
+  echo "🔑 Generating app key..."
+  php artisan key:generate --quiet
+
+  echo "🗃️  Running migrations and seeders..."
+  php artisan migrate:fresh --seed --quiet
+
+  echo ""
+  echo "✅ Worktree ready!"
+  echo ""
+  echo "   📂 $(pwd)"
+  echo "   🌐 https://${site_url}"
+  echo "   🗄️  ${db_name}"
+  echo "   📡 Reverb: wss://${site_url}:${reverb_port}"
+  echo ""
+  echo "   Run: composer dev:valet"
+  echo ""
+}
+
+# Remove worktree - works from anywhere
+wtr() {
+  if [ -z "$1" ]; then
+    echo "Usage: wtr <branch-name or folder-name> [--delete-branch]"
+    echo ""
+    echo "Current worktrees:"
+    git -C "${WORKTREE_BASE_DIR}/${MAIN_REPO}" worktree list
+    return 1
+  fi
+
+  local input="$1"
+  local delete_branch=false
+  local repo_path="${WORKTREE_BASE_DIR}/${MAIN_REPO}"
+
+  if [[ "$2" == "--delete-branch" ]]; then
+    delete_branch=true
+  fi
+
+  # Convert branch name to folder name if needed
+  local worktree_name
+  if [[ "$input" == *"/"* ]]; then
+    # Input looks like a branch name (feature/something)
+    local safe_branch_name=$(echo "$input" | sed 's/\//-/g')
+    worktree_name="${MAIN_REPO}-${safe_branch_name}"
+  else
+    # Input is already a folder name
+    worktree_name="$input"
+  fi
+
+  local worktree_path="${WORKTREE_BASE_DIR}/${worktree_name}"
+  local db_name=$(echo "$worktree_name" | sed 's/-/_/g')
+
+  if [ ! -d "$worktree_path" ]; then
+    echo "❌ Worktree not found: $worktree_path"
+    return 1
+  fi
+
+  # Get branch name before removing
+  local branch_name=$(git -C "$worktree_path" branch --show-current)
+
+  echo "🗑️  Removing worktree: $worktree_name"
+  echo "   Path: $worktree_path"
+  echo "   Branch: $branch_name"
+  echo "   Database: $db_name"
+  if [ "$delete_branch" = true ]; then
+    echo "   ⚠️  Will also delete branch: $branch_name"
+  fi
+  echo ""
+  read "confirm?Are you sure? (y/n) "
+
+  if [[ "$confirm" != "y" ]]; then
+    echo "Cancelled."
+    return 0
+  fi
+
+  # Unsecure the site
+  echo "🔓 Removing SSL certificate..."
+  valet unsecure "$worktree_name"
+
+  # Remove worktree
+  git -C "$repo_path" worktree remove "$worktree_path" --force 2>/dev/null
+
+  # Drop database
+  echo "🗄️  Dropping database..."
+  if [ -z "$DB_PASS" ]; then
+    mysql -u "$DB_USER" -e "DROP DATABASE IF EXISTS \`${db_name}\`;"
+  else
+    mysql -u "$DB_USER" -p"$DB_PASS" -e "DROP DATABASE IF EXISTS \`${db_name}\`;"
+  fi
+
+  # Delete branch if requested
+  if [ "$delete_branch" = true ]; then
+    echo "🌿 Deleting local branch..."
+    git -C "$repo_path" branch -D "$branch_name" 2>/dev/null
+
+    read "delete_remote?Delete remote branch too? (y/n) "
+    if [[ "$delete_remote" == "y" ]]; then
+      echo "🌿 Deleting remote branch..."
+      git -C "$repo_path" push origin --delete "$branch_name"
+    fi
+  fi
+
+  # Prune worktrees
+  git -C "$repo_path" worktree prune
+
+  echo "✅ Removed!"
+}
+
+wth() {
+  echo "🌳 Laravel Valet Worktree Commands"
+  echo ""
+  echo "  wt <branch>                  Create worktree with full Laravel setup"
+  echo "                               • New branch: wt feature/auth"
+  echo "                               • Existing branch: wt feature/existing"
+  echo "                               • Hotfixes branch from main: wt hotfix/urgent"
+  echo ""
+  echo "  wtl                          List all worktrees"
+  echo ""
+  echo "  wtr <branch|folder>          Remove worktree (keeps branch)"
+  echo "                               • wtr feature/auth"
+  echo "                               • wtr leedya-app-feature-auth"
+  echo ""
+  echo "  wtr <branch> --delete-branch Remove worktree AND delete branch"
+  echo ""
+  echo "  wtc <folder>                 Switch to a worktree directory"
+  echo "                               • wtc leedya-app-feature-auth"
+  echo ""
+  echo "  wth                          Show this help"
+  echo ""
+  echo "📁 Base directory: ${WORKTREE_BASE_DIR}"
+  echo "📦 Main repo: ${MAIN_REPO}"
+  echo ""
+}
