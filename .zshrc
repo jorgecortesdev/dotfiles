@@ -6,7 +6,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
-export PATH=./bin:vendor/bin:$HOME/bin:/usr/local/bin:$PATH:$HOME/.composer/vendor/bin
+export PATH="$HOME/.local/bin:$HOME/.docker/bin:$HOME/bin:$HOME/.composer/vendor/bin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="${HOME}/.oh-my-zsh"
@@ -109,15 +109,25 @@ source "$HOME/.aliases"
 # Directories shortcuts
 source "$HOME/.directories"
 
+# Project navigation and management functions
+source "$HOME/.project-functions"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export HOMEBREW_NO_INSTALL_CLEANUP=TRUE
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+#eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (manual setup - avoids slow path_helper on Tahoe)
+export HOMEBREW_PREFIX="/opt/homebrew"
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+export HOMEBREW_REPOSITORY="/opt/homebrew"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+fpath[1,0]="/opt/homebrew/share/zsh/site-functions"
+export MANPATH="/opt/homebrew/share/man:${MANPATH:-}"
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
 # Activate autosuggestions: brew install zsh-autosuggestions
-source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+#source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -125,9 +135,20 @@ export NVM_DIR="$HOME/.nvm"
 
 #export PATH="/opt/homebrew/opt/php@8.3/bin:$PATH"
 #export PATH="/opt/homebrew/opt/php@8.3/sbin:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
-export PATH="/opt/homebrew/opt/php@8.3/bin:$PATH"
-export PATH="/opt/homebrew/opt/php@8.3/sbin:$PATH"
+#export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+#export PATH="/opt/homebrew/opt/php@8.3/bin:$PATH"
+#export PATH="/opt/homebrew/opt/php@8.3/sbin:$PATH"
 
-export PATH="$HOME/.docker/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
+#export PATH="$HOME/.docker/bin:$PATH"
+#export PATH="$HOME/.local/bin:$PATH"
+
+
+source "$HOME/.leedya"
+
+# fzf (fuzzy finder — Ctrl+T: files, Ctrl+R: history, Alt+C: cd)
+source <(fzf --zsh)
+
+# zoxide (smart cd — learns your most-used directories)
+eval "$(zoxide init zsh)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -1,11 +1,10 @@
 # Shortcuts to projects I often work
 
 # personal
-students="$HOME/Code/cf/students"
-rm="$HOME/Code/jc/sites/reviewmate"
-jc="$HOME/Code/jc"
+rm="$HOME/Code/personal/sites/reviewmate"
+jc="$HOME/Code/personal"
 
 # work
-tc="$HOME/Code/bo/truecarbon-app"
-dw="$HOME/Code/bo/dewater"
-
+students="$HOME/Code/work/careerfoundry"
+tc="$HOME/Code/work/sites/truecarbon-app"
+dw="$HOME/Code/work/sites/dewater"

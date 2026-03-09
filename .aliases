@@ -40,29 +40,34 @@ clone() {
   else
     repo_url=$1
     repo_name=$(basename "$repo_url" ".${repo_url##*.}")
-    git clone $repo_url
-    cd $repo_name
+    git clone "$repo_url"
+    cd "$repo_name"
   fi
 }
 
 commit() {
-  commit_message="$1"
-  if [ "$commit_message" = "" ]
-  then
-    commit_message="wip"
-  fi
   git add .
-  eval "git commit -a -m '${commit_message}'"
+  git commit -m "${1:-wip}"
 }
 
-# Quick worktree creation
-wt() {
-  git worktree add "../$(basename $(pwd))-$1" -b "$1"
-  cd "../$(basename $(pwd))-$1"
+# PHP version switching
+php83() {
+  brew unlink php php@8.4 php@8.3 2>/dev/null
+  brew link php@8.3 --force --overwrite
+  echo "Switched to $(php -v | head -1)"
 }
 
-# Usage: wt feature/my-thing
-# Creates worktree and cd's into it
+php84() {
+  brew unlink php php@8.3 php@8.4 2>/dev/null
+  brew link php@8.4 --force --overwrite
+  echo "Switched to $(php -v | head -1)"
+}
+
+php85() {
+  brew unlink php@8.3 php@8.4 php 2>/dev/null
+  brew link php --force --overwrite
+  echo "Switched to $(php -v | head -1)"
+}
 
 # Misc stuff
 alias zshconfig="vim ~/.zshrc"
@@ -73,3 +78,4 @@ alias showDesktop="defaults write com.apple.finder CreateDesktop -bool true && k
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias c="code ."
 alias o="open ."
+alias mdown='open -a "MacDown 3000"'
