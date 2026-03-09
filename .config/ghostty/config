@@ -1,0 +1,17 @@
+term = xterm-256color
+working-directory = /Users/jcortes/Code
+cursor-style = block
+shell-integration-features = no-cursor
+
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 15
+
+theme = Catppuccin Mocha
+
+window-width = 130
+window-height = 32
+
+background-opacity = 0.95
+background-blur = 10
+
+scrollback-limit = 1000
