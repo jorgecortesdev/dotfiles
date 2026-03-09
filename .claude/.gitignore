@@ -1,0 +1,12 @@
+# Track only config — ignore all runtime/personal data
+*
+!.gitignore
+!CLAUDE.md
+!settings.json
+!statusline-command.sh
+!commands/
+!commands/*.md
+!skills/
+!skills/**
+!agents/
+!agents/**
