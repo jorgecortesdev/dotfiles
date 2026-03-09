@@ -1,18 +1,54 @@
-# Project navigation and management functions
+# Git
 
-# List project directories (excludes internals like .git, node_modules, vendor, etc.)
-function __proj_list() {
+clone() {
+  if [[ -z $1 ]]; then
+    echo "clone(): repository url not specified"
+    echo "usage: clone https://github.com/{USER}/{REPOSITORY}.git"
+    return 1
+  fi
+
+  local repo_url="$1"
+  local repo_name=$(basename "$repo_url" ".${repo_url##*.}")
+  git clone "$repo_url"
+  cd "$repo_name"
+}
+
+commit() {
+  git add .
+  git commit -m "${1:-wip}"
+}
+
+# PHP version switching
+
+php83() {
+  brew unlink php php@8.4 php@8.3 2>/dev/null
+  brew link php@8.3 --force --overwrite
+  echo "Switched to $(php -v | head -1)"
+}
+
+php84() {
+  brew unlink php php@8.3 php@8.4 2>/dev/null
+  brew link php@8.4 --force --overwrite
+  echo "Switched to $(php -v | head -1)"
+}
+
+php85() {
+  brew unlink php@8.3 php@8.4 php 2>/dev/null
+  brew link php --force --overwrite
+  echo "Switched to $(php -v | head -1)"
+}
+
+# Project navigation
+
+__proj_list() {
   local base=~/Code
   {
-    # Top-level projects: personal/*, work/*, learning/*, playground/*, oss/*
     find "$base"/{personal,work,learning,playground,oss} -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-    # Nested projects: personal/sites/*, personal/wordpress/*, work/sites/*, etc.
     find "$base"/{personal,work}/{sites,wordpress,careerfoundry,leedya} -mindepth 1 -maxdepth 1 -type d 2>/dev/null
   } | sort -u | sed "s|$HOME/Code/||" | grep -v -E '^(personal|work)/(sites|wordpress|careerfoundry|leedya)$'
 }
 
-# Fuzzy project selector — searches all project directories
-function proj() {
+proj() {
   local selected
   selected=$(__proj_list | fzf --prompt="Project> " --preview="ls -1 $HOME/Code/{}")
   if [[ -n "$selected" ]]; then
@@ -20,37 +56,7 @@ function proj() {
   fi
 }
 
-
-# Create a timestamped playground
-function scratch() {
-  local name="${1:-scratch}"
-  local days="${2:-30}"
-  local dir=~/Code/playground/"${name}-$(date +%Y%m%d-%H%M%S)"
-  mkdir -p "$dir"
-  echo "$(date -v+${days}d +%Y-%m-%d)" > "$dir/.expires"
-  cd "$dir"
-  git init
-  echo "# $name" > README.md
-  echo "Created: $(date)" >> README.md
-  echo "Expires: $(cat .expires)" >> README.md
-  echo "Created playground: $dir (expires in ${days} days)"
-}
-
-# Move current playground to a real category
-function promote() {
-  local target="${1:?Usage: promote <category> (e.g., promote personal)}"
-  local name=$(basename "$PWD")
-  local dest=~/Code/"$target"/"$name"
-  mv "$PWD" "$dest"
-  cd "$dest"
-  rm -f .expires
-  echo "Promoted to $dest"
-}
-
-# Show git status for projects (optionally filter by category)
-# Usage: proj-status [category]
-# Examples: proj-status, proj-status personal, proj-status work
-function proj-status() {
+proj-status() {
   setopt local_options null_glob
   local categories
   if [[ -n "$1" ]]; then
@@ -72,8 +78,23 @@ function proj-status() {
   done
 }
 
-# Refresh expiration of current playground (default: 30 more days)
-function scratch-refresh() {
+# Playground
+
+scratch() {
+  local name="${1:-scratch}"
+  local days="${2:-30}"
+  local dir=~/Code/playground/"${name}-$(date +%Y%m%d-%H%M%S)"
+  mkdir -p "$dir"
+  echo "$(date -v+${days}d +%Y-%m-%d)" > "$dir/.expires"
+  cd "$dir"
+  git init
+  echo "# $name" > README.md
+  echo "Created: $(date)" >> README.md
+  echo "Expires: $(cat .expires)" >> README.md
+  echo "Created playground: $dir (expires in ${days} days)"
+}
+
+scratch-refresh() {
   local days="${1:-30}"
   local expires_file="$PWD/.expires"
   if [[ ! -f "$expires_file" ]]; then
@@ -86,8 +107,17 @@ function scratch-refresh() {
   echo "Refreshed: $old_exp -> $new_exp (+${days} days)"
 }
 
-# Delete expired playgrounds
-function playground-clean() {
+promote() {
+  local target="${1:?Usage: promote <category> (e.g., promote personal)}"
+  local name=$(basename "$PWD")
+  local dest=~/Code/"$target"/"$name"
+  mv "$PWD" "$dest"
+  cd "$dest"
+  rm -f .expires
+  echo "Promoted to $dest"
+}
+
+playground-clean() {
   local today=$(date +%Y-%m-%d)
   for dir in ~/Code/playground/*/; do
     local exp=$(cat "$dir/.expires" 2>/dev/null)
@@ -99,8 +129,9 @@ function playground-clean() {
   echo "Cleanup complete."
 }
 
-# Help function
-function proj-help() {
+# Help
+
+proj-help() {
   echo ""
   echo "  \033[1mProject Navigation & Management\033[0m"
   echo ""
@@ -132,11 +163,3 @@ function proj-help() {
   echo "    playground-clean            Remove all expired playgrounds"
   echo ""
 }
-
-# Quick navigation aliases
-alias cdp="cd ~/Code/personal"
-alias cdw="cd ~/Code/work"
-alias cdl="cd ~/Code/learning"
-alias cdx="cd ~/Code/playground"
-alias cda="cd ~/Code/archive"
-alias cdo="cd ~/Code/oss"

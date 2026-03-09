@@ -1,15 +1,12 @@
 # dotfiles
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-# Laravel stuff
+# Laravel
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
-
 alias artisan="php artisan"
 alias sart="sail artisan"
-
 alias smf="sail artisan migrate:fresh"
 alias smfs="sail artisan migrate:fresh --seed"
-
 alias mf="php artisan migrate:fresh"
 alias mfs="php artisan migrate:fresh --seed"
 
@@ -19,57 +16,26 @@ alias pf="phpunit --filter"
 alias ptf="phpunit --testdox --filter"
 alias spf="sail phpunit --filter"
 
-# Git stuff
+# Git
 alias gs="git status"
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias ga="git add"
 alias gaa="git add ."
 alias gc="git commit -m"
 alias gp="git push"
-alias nah="git reset --hard && git clean -df"
-alias changelog="git log --oneline --since='2015-03-01' --format='* %cd: %s' --date=short"
-alias wip="git add . && git commit -m 'wip'"
 alias gpo="git push origin"
+alias nah="git reset --hard && git clean -df"
+alias wip="git add . && git commit -m 'wip'"
 
-# usage: clone https://github.com/{USER}/{REPOSITORY}.git
-# clone and change directory in one step
-clone() {
-  if [[ -z $1 ]]; then
-    echo "clone(): repository url not specified"
-    echo "usage: clone https://github.com/{USER}/{REPOSITORY}.git"
-  else
-    repo_url=$1
-    repo_name=$(basename "$repo_url" ".${repo_url##*.}")
-    git clone "$repo_url"
-    cd "$repo_name"
-  fi
-}
+# Quick navigation
+alias cdp="cd ~/Code/personal"
+alias cdw="cd ~/Code/work"
+alias cdl="cd ~/Code/learning"
+alias cdx="cd ~/Code/playground"
+alias cda="cd ~/Code/archive"
+alias cdo="cd ~/Code/oss"
 
-commit() {
-  git add .
-  git commit -m "${1:-wip}"
-}
-
-# PHP version switching
-php83() {
-  brew unlink php php@8.4 php@8.3 2>/dev/null
-  brew link php@8.3 --force --overwrite
-  echo "Switched to $(php -v | head -1)"
-}
-
-php84() {
-  brew unlink php php@8.3 php@8.4 2>/dev/null
-  brew link php@8.4 --force --overwrite
-  echo "Switched to $(php -v | head -1)"
-}
-
-php85() {
-  brew unlink php@8.3 php@8.4 php 2>/dev/null
-  brew link php --force --overwrite
-  echo "Switched to $(php -v | head -1)"
-}
-
-# Misc stuff
+# Misc
 alias zshconfig="vim ~/.zshrc"
 alias zshreload="source ~/.zshrc"
 alias hostfile="sudo vim /etc/hosts"
