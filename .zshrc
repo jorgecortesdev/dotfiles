@@ -44,3 +44,6 @@ source <(fzf --zsh)
 
 # zoxide (smart cd)
 eval "$(zoxide init zsh)"
+
+# zsh-autosuggestions (accept with →)
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh

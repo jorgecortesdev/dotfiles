@@ -15,14 +15,14 @@ This repository is inspired by and derived from the article [The best way to sto
 ```bash
 git init --bare $HOME/.cfg
 
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-config config --local status.showUntrackedFiles no
+dotfiles config --local status.showUntrackedFiles no
 ```
 
 The first line creates a bare repository under `$HOME/.cfg`.
 
-The second line is just a temporary alias that allows us to work easily with this new repository while you finish the rest of the setup. **Warning:** this alias will only exist during the current session, in order to keep it forever you must add it to your `.*rc` file, like `.zshrc`, or in my case `.aliases` file.
+The second line is just a temporary alias that allows us to work easily with this new repository while you finish the rest of the setup. **Warning:** this alias will only exist during the current session, in order to keep it forever you must add it to your `.*rc` file, like `.zshrc`, or in my case `.aliases` file. In this repository the alias is called `dotfiles` instead of `config`.
 
 And the last line is meant to hide files we are not explicitly tracking yet. This is useful because we don't want to add all the files in our home directory to a `.gitignore` file.
 
@@ -33,34 +33,34 @@ When you have the new repository do the following:
 ```bash
 echo ".cfg" >> .gitignore
 
-config add .gitignore
+dotfiles add .gitignore
 
-config commit -m "Added .gitignore file to ignore the .cfg directory"
+dotfiles commit -m "Added .gitignore file to ignore the .cfg directory"
 
-config branch -M main
+dotfiles branch -M main
 
-config remote add origin https://github.com/{GIT_USERNAME}/dotfiles.git
+dotfiles remote add origin https://github.com/{GIT_USERNAME}/dotfiles.git
 
-config pull origin main --rebase
+dotfiles pull origin main --rebase
 
-config push -u origin main
+dotfiles push -u origin main
 ```
 
-Keep in mind that `config` is the alias that you set up above and also that this is an example and some of the commands could not be required depending on your system. For example, set up your `main` branch could not be needed.
+Keep in mind that `dotfiles` is the alias that you set up above and also that this is an example and some of the commands could not be required depending on your system. For example, set up your `main` branch could not be needed.
 
 Replace the repository `https://github.com/{GIT_USERNAME}/dotfiles.git` with your own.
 
 ## Usage
 
-After the previous setup, any file within the `$HOME` folder can be versioned with normal commands, replacing git with your newly created config alias, like:
+After the previous setup, any file within the `$HOME` folder can be versioned with normal commands, replacing git with your newly created dotfiles alias, like:
 
 ```bash
-config status
-config add .vimrc
-config commit -m "Add vimrc"
-config add .bashrc
-config commit -m "Add bashrc"
-config push
+dotfiles status
+dotfiles add .vimrc
+dotfiles commit -m "Add vimrc"
+dotfiles add .bashrc
+dotfiles commit -m "Add bashrc"
+dotfiles push
 ```
 
 ## Using your dotfiles onto a new system
@@ -68,18 +68,18 @@ config push
 **WARNING:** If you have already some configurations files on your new system, before executing the next, please do a **BACKUP** of each file if you care about it or delete the file if you don't.
 
 ```bash
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 git clone --bare https://github.com/{GIT_USERNAME}/dotfiles.git $HOME/.cfg
 
-config config --local status.showUntrackedFiles no
+dotfiles config --local status.showUntrackedFiles no
 
-config checkout
+dotfiles checkout
 ```
 
 Replace the repository `https://github.com/{GIT_USERNAME}/dotfiles.git` with your own.
 
-And that's it, from now on you can use your `config` alias to update or create new configurations files.
+And that's it, from now on you can use your `dotfiles` alias to update or create new configurations files.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

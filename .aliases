@@ -1,5 +1,5 @@
 # dotfiles
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Laravel
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'

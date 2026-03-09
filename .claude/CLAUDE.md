@@ -25,7 +25,7 @@ Keep responses concise — lead with the answer, not the reasoning.
 - Never mention Claude Code in PR descriptions, comments, or commits.
 - No "Test plan" section in PR descriptions.
 - Don't commit unless I explicitly ask.
-- For dotfiles, use the `config` alias (`/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME`).
+- For dotfiles, use the `dotfiles` alias (`/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME`).
 
 # Workflow
 
