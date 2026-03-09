@@ -35,6 +35,13 @@ alias cdx="cd ~/Code/playground"
 alias cda="cd ~/Code/archive"
 alias cdo="cd ~/Code/oss"
 
+# Modern CLI replacements (conditional)
+command -v eza &>/dev/null && alias ls="eza"
+command -v bat &>/dev/null && alias cat="bat"
+command -v rg &>/dev/null && alias grep="rg"
+command -v fd &>/dev/null && alias find="fd"
+command -v btm &>/dev/null && alias top="btm"
+
 # Misc
 alias zshconfig="vim ~/.zshrc"
 alias zshreload="source ~/.zshrc"
