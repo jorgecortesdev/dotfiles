@@ -45,10 +45,13 @@ if application "iTerm" is running then
     end tell
 end if
 
--- Ghostty
+-- Ghostty: Use System Events (no AppleScript dictionary)
 if application "Ghostty" is running then
-    tell application "Ghostty"
-        set bounds of window 1 to {4096, 25, 5120, 1440}
+    tell application "System Events"
+        tell process "Ghostty"
+            set position of window 1 to {4096, 25}
+            set size of window 1 to {1024, 1415}
+        end tell
     end tell
 end if
 END
