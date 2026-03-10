@@ -15,6 +15,13 @@ source "$ZSH/oh-my-zsh.sh"
 # Environment
 export LANG=en_US.UTF-8
 export EDITOR='vim'
+export HISTSIZE=32768
+export HISTFILESIZE=$HISTSIZE
+export HISTORY_IGNORE="(ls|cd|cd -|pwd|exit|date|* --help)"
+export LESS_TERMCAP_md=$'\e[1;33m'
+export LESS_TERMCAP_me=$'\e[0m'
+export MANPAGER="less -X"
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 # Shell config
 source "$HOME/.aliases"

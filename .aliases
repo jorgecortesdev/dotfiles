@@ -25,6 +25,7 @@ alias gc="git commit -m"
 alias gp="git push"
 alias gpo="git push origin"
 alias nah="git reset --hard && git clean -df"
+alias uncommit="git reset --soft HEAD~1"
 alias wip="git add . && git commit -m 'wip'"
 
 # Quick navigation
@@ -36,7 +37,12 @@ alias cda="cd ~/Code/archive"
 alias cdo="cd ~/Code/oss"
 
 # Modern CLI replacements (conditional)
-command -v eza &>/dev/null && alias ls="eza"
+if command -v eza &>/dev/null; then
+  alias ls="eza --icons --group-directories-first"
+  alias l="eza -la --icons --group-directories-first"
+  alias ll="eza -l --icons --group-directories-first"
+  alias lt="eza --tree --level=2 --icons"
+fi
 command -v bat &>/dev/null && alias cat="bat"
 command -v rg &>/dev/null && alias grep="rg"
 command -v fd &>/dev/null && alias find="fd"

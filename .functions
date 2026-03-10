@@ -129,6 +129,29 @@ playground-clean() {
   echo "Cleanup complete."
 }
 
+# Database
+
+db() {
+  case "$1" in
+    refresh)
+      mysql -uroot -e "drop database $2; create database $2"
+      ;;
+    create)
+      mysql -uroot -e "create database $2"
+      ;;
+    drop)
+      mysql -uroot -e "drop database $2"
+      ;;
+    list)
+      mysql -uroot -e "show databases" | sed 's/[|[:space:]]//g'
+      ;;
+    *)
+      echo "Usage: db {refresh|create|drop|list} [database_name]"
+      return 1
+      ;;
+  esac
+}
+
 # Help
 
 proj-help() {
