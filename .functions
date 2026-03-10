@@ -43,9 +43,9 @@ php85() {
 __proj_list() {
   local base=~/Code
   {
-    find "$base"/{personal,work,learning,playground,oss} -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-    find "$base"/{personal,work}/{sites,wordpress,careerfoundry,leedya} -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-  } | sort -u | sed "s|$HOME/Code/||" | grep -v -E '^(personal|work)/(sites|wordpress|careerfoundry|leedya)$'
+    /usr/bin/find "$base"/{personal,work,learning,playground,oss} -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    /usr/bin/find "$base"/{personal,work}/{sites,wordpress,careerfoundry,leedya} -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+  } | sort -u | sed "s|$HOME/Code/||" | /usr/bin/grep -v -E '^(personal|work)/(sites|wordpress|careerfoundry|leedya)$'
 }
 
 proj() {
