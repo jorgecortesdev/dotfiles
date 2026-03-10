@@ -1,0 +1,29 @@
+*~
+.DS_Store
+._*
+
+# Editors
+.idea
+.vscode
+
+# PHP
+.phpunit.result.cache
+.phpunit-watcher-cache.php
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Environment
+.env
+
+# Claude
+.claude/settings.local.json
+
+# Playwright
+.playwright
+.playwright-mcp
+
+# Windows
+Thumbs.db
