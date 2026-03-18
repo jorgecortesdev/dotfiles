@@ -4,7 +4,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # PATH
-export PATH="$HOME/.local/bin:$HOME/.docker/bin:$HOME/bin:$HOME/.composer/vendor/bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$HOME/.local/bin:$HOME/.docker/bin:$HOME/bin:$HOME/.composer/vendor/bin:$PATH"
 
 # Oh My Zsh
 export ZSH="${HOME}/.oh-my-zsh"
@@ -54,3 +54,9 @@ eval "$(zoxide init zsh)"
 
 # zsh-autosuggestions (accept with →)
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Trust Valet CA for Node.js (needed for Claude Code MCP)
+export NODE_EXTRA_CA_CERTS="$HOME/.config/valet/CA/LaravelValetCASelfSigned.pem"
+
+# Claude Code MCP tokens
+[[ -f ~/.claude/.env ]] && source ~/.claude/.env

@@ -15,3 +15,5 @@ background-opacity = 0.95
 background-blur = 10
 
 scrollback-limit = 1000
+
+copy-on-select = clipboard

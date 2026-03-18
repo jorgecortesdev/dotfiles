@@ -28,6 +28,7 @@
       "Bash(npx:*)",
       "Bash(vendor/bin/pest:*)",
       "Bash(vendor/bin/phpunit:*)",
+      "Bash(php artisan test:*)",
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(mv:*)",
@@ -37,6 +38,7 @@
       "Bash(sed:*)",
       "Bash(make:*)",
       "Bash(brew:*)",
+      "Bash(composer show:*)",
       "WebSearch",
       "WebFetch"
     ]
@@ -53,6 +55,25 @@
     "php-lsp@claude-plugins-official": true,
     "laravel-simplifier@laravel": true,
     "ralph-loop@claude-plugins-official": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Engineering skills available: tdd-pest, debugging, plan-writing, subagent-dispatch, pressure-test. Check if one applies before starting work.'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/config-override-check.sh",
+            "timeout": 3000
+          }
+        ]
+      }
+    ]
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high"
